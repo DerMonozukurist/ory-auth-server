@@ -1,0 +1,25 @@
+{
+  "name": "der-monozukurist/ory-auth-server",
+  "description": "Composer package for local Ory Kratos and Hydra development environment",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.4",
+    "symfony/console": "^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "DerMonozukurist\\OryAuthServer\\": "src/"
+    }
+  },
+  "bin": ["bin/ory-auth-server"],
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "1.x-dev"
+    }
+  },
+  "minimum-stability": "dev"
+}

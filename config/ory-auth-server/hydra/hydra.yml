@@ -1,0 +1,29 @@
+version: v2.2.0
+
+dsn: memory
+
+serve:
+  public:
+    port: 4444
+  admin:
+    port: 4445
+
+urls:
+  self:
+    issuer: http://localhost:4444
+  login: http://localhost:4433/login
+  consent: http://localhost:4433/consent
+  logout: http://localhost:4433/logout
+  error: http://localhost:4433/error
+
+secrets:
+  system:
+    - you-should-change-this-in-production
+
+oidc:
+  subject_identifiers:
+    supported_types:
+      - pairwise
+      - public
+    pairwise:
+      salt: you-should-change-this-salt-in-production

@@ -1,0 +1,50 @@
+version: v0.11.0
+
+dsn: memory
+
+serve:
+  public:
+    base_url: http://localhost:4433/
+    port: 4433
+  admin:
+    base_url: http://localhost:4434/
+    port: 4434
+
+selfservice:
+  default_browser_return_url: http://localhost:4435/
+  allowed_return_urls:
+    - http://localhost:4435/*
+    - http://localhost:3000/*
+    - http://localhost:8080/*
+
+  methods:
+    password:
+      enabled: true
+    oidc:
+      enabled: false
+
+  flows:
+    error:
+      ui_url: http://localhost:4435/error
+    settings:
+      ui_url: http://localhost:4435/settings
+      privileged_session_max_age: 15m
+    recovery:
+      enabled: true
+      ui_url: http://localhost:4435/recovery
+    verification:
+      enabled: true
+      ui_url: http://localhost:4435/verification
+    logout:
+      after:
+        default_browser_return_url: http://localhost:4435/login
+
+courier:
+  smtp:
+    connection_uri: smtp://fake:fake@localhost/
+
+identity:
+  default_schema_id: default
+  schemas:
+    - id: default
+      url: file:///etc/kratos/identity.schema.json
