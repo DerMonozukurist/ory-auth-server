@@ -57,9 +57,9 @@ You can customize ports, log levels, and service URLs through `.env`. The Compos
    ```shell
    curl http://localhost:4444/.well-known/openid-configuration
    ```
-   You should see a JSON response that suggests that the server is running.
+   You should see a JSON response suggesting that the server is running.
 5. Test Kratos Self-Service UI (browser)\
-   In a browser, navigate to http://localhost:4435. You should see a page indicating that everything is running.
+   In a browser, navigate to http://localhost:4435. You should see a page indicating that everything is working correctly.
 
 ## Common Tasks
 - Start services: docker compose up -d
