@@ -35,7 +35,31 @@ This project provides a ready-to-run authentication and authorization server. Wi
 You can customize ports, log levels, and service URLs through `.env`. The Compose file reads those values when starting the containers.
 
 ### Docker compose override
-- The suggested way to override the default configuration is to create a `docker-compose.override.yaml` file in the project root.
+- The suggested way to override the default docker compose configuration is to create a `docker-compose.override.yaml` file in the project root.
+
+## Verify
+1. Check if all containers are running:
+   ```shell
+   $ docker ps
+   ```
+   All services should show (`postgres`, `kratos`, `hydra`, `kratos-selfservice-ui`) should show **"Up"** status.
+2. Verify Kratos API is responding
+   ```shell
+   $ curl http://localhost:4433/health/alive
+   {"status":"ok"}
+   ```
+3. Verify Hydra API is responding
+   ```shell
+   $ curl http://localhost:4444/health/alive
+   {"status":"ok"}
+   ```
+4. Check that OAuth 2.0 discovery works
+   ```shell
+   curl http://localhost:4444/.well-known/openid-configuration
+   ```
+   You should see a JSON response that suggests that the server is running.
+5. Test Kratos Self-Service UI (browser)\
+   In a browser, navigate to http://localhost:4435. You should see a page indicating that everything is running.
 
 ## Common Tasks
 - Start services: docker compose up -d

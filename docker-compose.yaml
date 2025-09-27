@@ -73,7 +73,7 @@ services:
   kratos-selfservice-ui:
     image: oryd/kratos-selfservice-ui-node:${OAS_KRATOS_UI_VERSION:-v1.1.0}
     ports:
-      - "${OAS_KRATOS_UI_PORT:-4435}:4435"
+      - "${OAS_KRATOS_UI_PORT:-4435}:3000"
     environment:
       - KRATOS_PUBLIC_URL=http://kratos:4433
       - KRATOS_BROWSER_URL=http://localhost:4433
