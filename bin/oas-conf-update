@@ -1,0 +1,175 @@
+#!/bin/sh
+
+show_usage() {
+  cat << EOF
+Usage: $0 [OPTIONS] <config_file>
+
+Update configuration files by merging package defaults with project-specific versions.
+
+Valid config files:
+  .env
+  docker-compose.yaml
+  config/ory-auth-server/kratos/kratos.yml
+  config/ory-auth-server/kratos/identity.schema.json
+  config/ory-auth-server/hydra/hydra.yml
+
+Options:
+  -h, --help    Show this help message and exit
+
+Examples:
+  $0 .env
+  $0 config/ory-auth-server/kratos/kratos.yml
+EOF
+}
+
+show_error() {
+  _error=$1
+  echo "Error: $_error" >&2
+}
+
+get_first_positional_arg() {
+  # Skip all known/unknown options (anything starting with -)
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -h|--help)
+        show_usage
+        return 0
+        ;;
+      --)  # End of options marker
+        shift
+        break
+        ;;
+      --*=*|--*|-*)  # Any option (long or short form)
+        return 1
+        ;;
+      *)  # First non-option argument found
+        echo "$1"
+        return 0
+        ;;
+    esac
+  done
+
+  return 1
+}
+
+validate_conf_file() {
+  conf_file="$1"
+
+  if [ -z "$conf_file" ]; then
+    show_error "Config file cannot be empty"
+    return 1
+  fi
+
+  case "$conf_file" in
+    .env|\
+    docker-compose.yaml|\
+    config/ory-auth-server/kratos/kratos.yml|\
+    config/ory-auth-server/kratos/identity.schema.json|\
+    config/ory-auth-server/hydra/hydra.yml)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+get_composer_project_root() {
+  # Get script directory
+  script_dir=$(CDPATH="" cd -- "$(dirname "$0")" && pwd) || {
+    show_error "Cannot determine script directory"
+    return 1
+  }
+
+  # Start from script directory
+  current_dir="$script_dir"
+
+  # Traverse up the directory tree until we find both required files or reach root
+  while [ "$current_dir" != "/" ]; do
+    # Check if both composer.json and vendor/autoload.php exist
+    if [ -f "$current_dir/composer.json" ] && [ -f "$current_dir/vendor/autoload.php" ]; then
+      echo "$current_dir"
+      return 0
+    fi
+
+    # Move up one directory
+    current_dir=$(CDPATH="" cd -- "$current_dir/.." && pwd)
+  done
+
+  show_error "Unable to resolve the project root"
+  return 1
+}
+
+merge_config() {
+  _file=$1
+  project_root=$2
+  package_dir=$3
+  project_tmp_dir=$4
+
+  if [ -f "$project_root/$_file" ]; then
+    mkdir -p "$(dirname "$project_tmp_dir/$_file")" || return 1
+    sdiff -o "$project_tmp_dir/$_file" "$project_root/$_file" "$package_dir/$_file" >/dev/null 2>&1 || {
+      return 1
+    }
+    cp "$project_tmp_dir/$_file" "$project_root/$_file" || return 1
+  else
+    cp "$package_dir/$_file" "$project_root/$_file" || return 1
+  fi
+
+  return 0
+}
+
+main() {
+  if ! command -v sdiff >/dev/null 2>&1; then
+    show_error "'sdiff' is not installed"
+    return 1
+  fi
+
+  if ! command -v realpath >/dev/null 2>&1; then
+    show_error "'realpath' is not installed"
+    return 1
+  fi
+
+  help_was_invoked=0
+  file_to_update=""
+
+  for item in "$@"; do
+    case "$item" in
+      -h|--help)
+        help_was_invoked=1
+        break
+        ;;
+      --)  # End of options marker
+        break
+        ;;
+      --*=*|--*|-*)  # Any option (long or short form)
+        break
+        ;;
+      *)
+        [ -z "$file_to_update" ] && file_to_update=$item # First non-option argument found
+        ;;
+    esac
+  done
+
+  [ "$help_was_invoked" -eq 1 ] && {
+    show_usage
+    return 0
+  }
+
+  if ! validate_conf_file "$file_to_update"; then
+    show_error "Invalid config file: '$file_to_update'"
+    return 1
+  fi
+
+  # Initialize composer variables
+  project_root="$(get_composer_project_root)" || return 1
+  package_dir="$(dirname "$(dirname "$(realpath "$0")")")" || return 1
+  project_tmp_dir="$project_root/var/tmp"
+
+  merge_config "$file_to_update" "$project_root" "$package_dir" "$project_tmp_dir" || {
+    show_error "Merging of config file failed!"
+    return 1
+  }
+}
+
+main "$@" || exit 1

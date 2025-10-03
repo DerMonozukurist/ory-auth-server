@@ -1,4 +1,9 @@
-/.idea/
+/bin/
+/coverage
 /var/
 /vendor/
 /composer.lock
+/*.yaml
+
+# ignore <dot> folders
+/.*/

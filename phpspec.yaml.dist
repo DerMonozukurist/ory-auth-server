@@ -1,0 +1,16 @@
+formatter.name: dot
+
+suites:
+  default_suite:
+    namespace: DerMonozukurist\OryAuthServer
+    psr4_prefix: DerMonozukurist\OryAuthServer
+
+extensions:
+  FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
+    format:
+      - html
+    output:
+      html: var/coverage
+
+  DerMonozukurist\PhpSpec\CoverageTest\Extension:
+    min_coverage: 100.0

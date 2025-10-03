@@ -5,16 +5,23 @@
   "license": "MIT",
   "require": {
     "php": "^8.4",
-    "symfony/console": "^8.0"
+    "symfony/console": "^7.0"
+  },
+  "require-dev": {
+    "der-monozukurist/php-dev-toolkit": "dev-main"
   },
   "autoload": {
     "psr-4": {
       "DerMonozukurist\\OryAuthServer\\": "src/"
     }
   },
-  "bin": ["bin/ory-auth-server"],
+  "bin": ["bin/oas-conf-update"],
   "config": {
-    "sort-packages": true
+    "bin-dir": "bin",
+    "sort-packages": true,
+    "allow-plugins": {
+      "phpro/grumphp": false
+    }
   },
   "extra": {
     "branch-alias": {
