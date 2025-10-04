@@ -77,3 +77,6 @@ You can customize ports, log levels, and service URLs through `.env`. The Compos
 
 ## License
 MIT License. See [LICENSE.txt](./LICENSE.txt) for details.
+
+## Development guidelines
+- See [doc/development-guidelines.md](./doc/development-guidelines.md)
