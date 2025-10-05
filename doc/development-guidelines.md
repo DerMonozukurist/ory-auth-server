@@ -1,4 +1,4 @@
-# Development Guidelines
+# A Craftsman's Development Guidelines
 
 ## Core Philosophy
 Software is not just code, it’s a living expression of business intent, human collaboration, and evolving understanding. These guidelines exist not to impose rigid rules, but to cultivate a shared mindset that balances clarity, adaptability, and responsibility across every layer of our systems.
@@ -45,6 +45,12 @@ DDD aligns software structure with business reality by modeling the core domain 
 SOLID is a set of five object-oriented design principles (Single Responsibility - SRP, Open/Closed - OCP, Liskov Substitution - LSP, Interface Segregation - ISP, Dependency Inversion - DIP) that promote flexible, maintainable, and testable code.
 
 > _Don’t force abstractions prematurely (violating YAGNI) just to satisfy SOLID. Apply them when change or testing becomes painful._
+
+* **Single Responsibility:** Give each class one reason to change - split large classes.
+* **Open/Closed:** Extend behavior via new code (e.g., strategies, plugins), not by modifying existing code.
+* **Liskov Substitution:** Ensure subclasses can replace parent classes without breaking behavior.
+* **Interface Segregation:** Create small, role-specific interfaces - not monolithic ones.
+* **Dependency Inversion:** Depend on abstractions (interfaces), not concrete implementations; inject dependencies.
 
 ### 2. Principles of Package Cohesion
 These principles define what classes should belong together in the same package. They ensure packages are focused, reusable, and easy to understand by grouping classes that change for the same reasons or serve the same high-level purpose.
